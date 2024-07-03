@@ -7,8 +7,18 @@ structure Date where
   month : Nat
   year : Nat
 
+def construct_date (s : String) : Date :=
+  let s_splitted := s.splitOn "-"
+  {
+    year := (s_splitted.get! 0).toNat!,
+    month := (s_splitted.get! 1).toNat!,
+    day := (s_splitted.get! 2).toNat!
+  }
+
 instance : ToString Date where
-  toString := fun d ↦ s!"{d.year}-{d.month}-{d.day}"
+  toString := fun d ↦
+    let format := fun n ↦ if 9 < n then toString n else "0" ++ toString n
+    s!"{format d.year}-{format d.month}-{format d.day}"
 
 def add_months (d : Date) (n : Nat) : Date :=
   let months := d.month + n

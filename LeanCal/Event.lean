@@ -3,20 +3,57 @@
  -/
 
 import LeanCal.Utils
+import LeanCal.Date
 
+inductive Time where
+  | Day (n : Nat) : Time
+  | Month (n : Nat) : Time
+  | Year (n : Nat) : Time
+  | None : Time
+
+open Time
+
+def construct_time (s : String) : Time :=
+  if s == "" then None
+  else
+    let s_splitted := s.splitOn "-"
+    let n := (s_splitted.get! 0).toNat!
+    match s_splitted.get! 1 with
+      | "d" => Day n
+      | "m" => Month n
+      | "y" => Year n
+      | _ => None
 
 structure Event where
-  day : String
+  date : Date
   hour : String
   event : String
+  recu : Time
 
 instance : ToString Event where
-  toString := fun e ↦ s!"{e.day}_{e.hour}  {e.event}"
+  toString := fun e ↦
+    match e.recu with
+    | None => s!"{e.date}_{e.hour}  {e.event}"
+    | Day n =>
+      s!"{e.date}_{e.hour}  {e.event}  {n}-d"
+    | Month n =>
+      s!"{e.date}_{e.hour}  {e.event}  {n}-m"
+    | Year n =>
+      s!"{e.date}_{e.hour}  {e.event}  {n}-y"
 
 instance : BEq Event where
   beq := fun e1 e2 ↦ toString e1 == toString e2
 
 def construct_event (event_str : String) : Event :=
-  let date_event := (event_str.splitOn "  ")
-  let day_hour := (date_event.get! 0).splitOn "_"
-  {day := day_hour.get! 0, hour := day_hour.get! 1, event := date_event.get! 1}
+  let date_event_recu := (event_str.splitOn "  ")
+  let day_hour := (date_event_recu.get! 0).splitOn "_"
+  let recu :=
+    if date_event_recu.length == 3 then
+      construct_time (date_event_recu.get! 2)
+    else None
+  {
+    date := construct_date (day_hour.get! 0),
+    hour := day_hour.get! 1,
+    event := date_event_recu.get! 1,
+    recu := recu
+  }
