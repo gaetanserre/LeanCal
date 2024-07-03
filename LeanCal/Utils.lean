@@ -30,4 +30,4 @@ def diff {α : Type} [BEq α] (l1 l2 : List α) : List α :=
 end List
 
 def send_notification (s : String) : IO Bool := do
-  sys_call "notify-send" #[s, "-t", "10000", "-i", "LeanCal_HOME/calendar.jpg"] >>= string_to_true
+  sys_call "notify-send" #[s, "-t", "10000", "-i", "LeanCal_HOME/calendar.png"] >>= string_to_true
