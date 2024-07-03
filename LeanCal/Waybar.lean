@@ -19,21 +19,22 @@ def format_events (el : List Event) : String :=
       s!"🕛 <b>{e.hour}</b> : {e.event}\\n" ++ format_events tl
 
 /-- Recover all today's events and format the output for Waybar. -/
-def get_waybar_events (fevents : String) := do
-  let io_events ← read_lines fevents
-  let events := io_events.map construct_event
-  let io_today ← get_day
-  let today := construct_date io_today
-  let rec aux (el acc : List Event) :=
-    match el with
-      | [] => acc
-      | e::tl =>
-        aux tl (if e.date == today then e::acc else acc)
-  let today_events := aux events []
-  pure (
-    "{"
-    ++ s!"\"text\": \"{today_events.length}\","
-    ++ "\"tooltip\": \""
-    ++ "🗓️ <b>Today\\n</b>"
-    ++ (format_events today_events) ++ "\"}"
-  )
+def get_waybar_events (fevents fpast_events : String) := do
+  read_lines fevents >>=
+    fun el ↦ read_lines fpast_events >>= fun past_el ↦ do
+      let events := el.map construct_event ++ past_el.map construct_event
+      let io_today ← get_day
+      let today := construct_date io_today
+      let rec aux (el acc : List Event) :=
+        match el with
+          | [] => acc
+          | e::tl =>
+            aux tl (if e.date == today then e::acc else acc)
+      let today_events := aux events []
+      pure (
+        "{"
+        ++ s!"\"text\": \"{today_events.length}\","
+        ++ "\"tooltip\": \""
+        ++ "🗓️ <b>Today\\n</b>"
+        ++ (format_events today_events) ++ "\"}"
+      )
