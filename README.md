@@ -16,7 +16,7 @@ The executable will be generated at the root of the project. A folder named `.Le
 ### Event format
 The events are stored in the `events.txt` file. Each event is stored in a single line with the following format:
 ```
-yy-mm-dd_hh-mm^Event description^[n-{d|m|y}]
+yy-mm-dd_hh:mm^Event description^[n-{d|m|y}]
 ```
 The date is in the format `yy-mm-dd_hh:mm` and the recurrence is optional. The recurrence is a number followed by a dash and a letter. The letter can be `d` for days, `m` for months or `y` for years. For instance, `1-d` means that the event will be repeated every day.
 
