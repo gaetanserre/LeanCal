@@ -75,7 +75,7 @@ def cal_run (fevents fpast_events : String) := do
               <| ((events.diff notified_el) ++ new_recu_events).foldr
                  (fun e acc ↦ (toString e) ++ "\n" ++ acc) ""
           else pure ());
-          IO.sleep 1000
+          IO.sleep 10000
 
 def clean_events (fpast_events events : String) : IO Unit := do
   IO.FS.writeFile events "";
