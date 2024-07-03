@@ -43,9 +43,9 @@ def get_waybar_events (fevents fpast_events : String) := do
           "🗓️ <b>Today</b>\\n" ++ (format_events today_events)
         else "")
         ++
-        -- Display tomorrow's events if any. Newline if today's events nonempty.
+        -- Display tomorrow's events if any. Newlines if today's events nonempty.
         (if 0 < tomorrow_events.length then
-          (if 0 < today_events.length then "\\n" else "")
+          (if 0 < today_events.length then "\\n\\n" else "")
           ++ "🗓️ <b>Tomorrow</b>\\n" ++ (format_events tomorrow_events)
         else "")
 
