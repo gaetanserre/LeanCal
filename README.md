@@ -1,6 +1,6 @@
 ## Lean Calendar
 
-This is a simple calendar manager written in Lean that sends notification using `notify-send` whenever an event is due.
+This is a simple calendar manager written in Lean that sends notification using `notify-send` whenever an event is due. Compatible with Waybar.
 
 
 ### Usage
