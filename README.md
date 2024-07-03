@@ -1,6 +1,6 @@
 ## Lean Calendar
 
-This is a simple calendar manager written in Lean that sends notification using `notify-send` whenever an event is due.
+This is a simple calendar manager written in Lean that sends notification using `notify-send` whenever an event is due. Compatible with Waybar.
 
 
 ### Usage
@@ -28,7 +28,7 @@ LeanCal can be integrated with [Waybar](https://github.com/Alexays/Waybar). To d
 "custom/leanCal": {
     "format": "{}",
     "tooltip": true,
-    "interval": 2,
+    "interval": 3600,
     "exec": "path/to/leancal -w",
     "return-type": "json"
   }
