@@ -20,6 +20,9 @@ instance : ToString Date where
     let format := fun n ↦ if 9 < n then toString n else "0" ++ toString n
     s!"{format d.year}-{format d.month}-{format d.day}"
 
+instance : BEq Date where
+  beq := fun d₁ d₂ ↦ d₁.day == d₂.day ∧ d₁.month == d₂.month ∧ d₁.year == d₂.year
+
 def add_months (d : Date) (n : Nat) : Date :=
   let months := d.month + n
   {
