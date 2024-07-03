@@ -26,7 +26,7 @@ The date is in the format `yy-mm-dd_hh-mm` and the recurrence is optional. The r
 LeanCal can be integrated with [Waybar](https://github.com/Alexays/Waybar). To do so, add the following block to your Waybar configuration:
 ```json
 "custom/leanCal": {
-    "format": "{}",
+    "format": "🗓️ {}",
     "tooltip": true,
     "interval": 3600,
     "exec": "path/to/leancal -w",
