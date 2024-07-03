@@ -18,9 +18,9 @@ The events are stored in the `events.txt` file. Each event is stored in a single
 ```
 yy-mm-dd_hh-mm^Event description^[n-{d|m|y}]
 ```
-The date is in the format `yy-mm-dd_hh-mm` and the recurrence is optional. The recurrence is a number followed by a dash and a letter. The letter can be `d` for days, `m` for months or `y` for years. For instance, `1-d` means that the event will be repeated every day.
+The date is in the format `yy-mm-dd_hh:mm` and the recurrence is optional. The recurrence is a number followed by a dash and a letter. The letter can be `d` for days, `m` for months or `y` for years. For instance, `1-d` means that the event will be repeated every day.
 
-**Example:** `24-08-30_12-00^Meeting with Gruvbox^7-d`
+**Example:** `24-08-30_12:00^Meeting with Gruvbox^7-d`
 
 ### Waybar
 LeanCal can be integrated with [Waybar](https://github.com/Alexays/Waybar). To do so, add the following block to your Waybar configuration:

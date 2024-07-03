@@ -8,11 +8,11 @@ import LeanCal.Event
 def get_date : IO String :=
   let format_date (s : String) :=
     pure (s.replace "\n" "")
-  sys_call "date" #["+%y-%m-%d%H-%M"] >>= format_date
+  sys_call "date" #["+%y-%m-%d%H:%M"] >>= format_date
 
 def compare_dates (d₁ d₂ : String) : Bool :=
-  let i_d₁ := (d₁.replace "-" "").toNat!
-  let i_d₂ := (d₂.replace "-" "").toNat!
+  let i_d₁ := ((d₁.replace "-" "").replace ":" "").toNat!
+  let i_d₂ := ((d₂.replace "-" "").replace ":" "").toNat!
   i_d₁ ≤ i_d₂
 
 /-- Send a notification for Event `e` if `e` ∉ `past_events`. -/
@@ -20,7 +20,7 @@ def notify_event (e : Event) (past_events : List Event) : IO Bool :=
   let d_event := toString e.date ++ e.hour
   get_date >>= fun d₂ ↦
     if compare_dates d_event d₂ ∧ ¬(past_events.contains e) then
-      send_notification s!"{e.hour.replace "-" ":"} : {e.event}"
+      send_notification s!"{e.hour} : {e.event}"
     else pure false
 
 /-- Send a notification for each due event and returns the list of such events. -/
