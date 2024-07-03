@@ -18,6 +18,15 @@ def format_events (el : List Event) : String :=
     | e::tl =>
       s!"🕛 <b>{e.hour}</b> : {e.event}\\n" ++ format_events tl
 
+/-- Get all events of a specific date. -/
+def get_date_events (d : Date) (el : List Event) : List Event :=
+  let rec aux (el acc : List Event) :=
+    match el with
+      | [] => acc
+      | e::tl =>
+        aux tl (if e.date == d then e::acc else acc)
+  aux el []
+
 /-- Recover all today's events and format the output for Waybar. -/
 def get_waybar_events (fevents fpast_events : String) := do
   read_lines fevents >>=
@@ -25,16 +34,24 @@ def get_waybar_events (fevents fpast_events : String) := do
       let events := el.map construct_event ++ past_el.map construct_event
       let io_today ← get_day
       let today := construct_date io_today
-      let rec aux (el acc : List Event) :=
-        match el with
-          | [] => acc
-          | e::tl =>
-            aux tl (if e.date == today then e::acc else acc)
-      let today_events := aux events []
+      let today_events := get_date_events today events
+      let tomorrow_events := get_date_events (add_days today 1) events
+
+      let tooltip :=
+        -- Display today's events if any.
+        (if 0 < today_events.length then
+          "🗓️ <b>Today</b>\\n" ++ (format_events today_events)
+        else "")
+        ++
+        -- Display tomorrow's events if any. Newline if today's events nonempty.
+        (if 0 < tomorrow_events.length then
+          (if 0 < today_events.length then "\\n" else "")
+          ++ "🗓️ <b>Tomorrow</b>\\n" ++ (format_events tomorrow_events)
+        else "")
+
       pure (
-        "{"
-        ++ s!"\"text\": \"{today_events.length}\","
+        "{" ++ s!"\"text\": \"{today_events.length}\","
         ++ "\"tooltip\": \""
-        ++ "🗓️ <b>Today\\n</b>"
-        ++ (format_events today_events) ++ "\"}"
+        ++ tooltip
+        ++ "\"}"
       )
