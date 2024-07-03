@@ -33,19 +33,19 @@ structure Event where
 instance : ToString Event where
   toString := fun e ↦
     match e.recu with
-    | None => s!"{e.date}_{e.hour}  {e.event}"
+    | None => s!"{e.date}_{e.hour}^{e.event}"
     | Day n =>
-      s!"{e.date}_{e.hour}  {e.event}  {n}-d"
+      s!"{e.date}_{e.hour}^{e.event}^{n}-d"
     | Month n =>
-      s!"{e.date}_{e.hour}  {e.event}  {n}-m"
+      s!"{e.date}_{e.hour}^{e.event}^{n}-m"
     | Year n =>
-      s!"{e.date}_{e.hour}  {e.event}  {n}-y"
+      s!"{e.date}_{e.hour}^{e.event}^{n}-y"
 
 instance : BEq Event where
   beq := fun e1 e2 ↦ toString e1 == toString e2
 
 def construct_event (event_str : String) : Event :=
-  let date_event_recu := (event_str.splitOn "  ")
+  let date_event_recu := (event_str.splitOn "^")
   let day_hour := (date_event_recu.get! 0).splitOn "_"
   let recu :=
     if date_event_recu.length == 3 then
