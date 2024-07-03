@@ -81,7 +81,7 @@ def calendar_run (fevents fpast_events : String) := do
               <| ((events.diff due_events) ++ new_recu_events).foldr
                  (fun e acc ↦ (toString e) ++ "\n" ++ acc) ""
           else pure ());
-          IO.sleep 10000
+          IO.sleep 60000
 
 def clean_events (fpast_events events : String) : IO Unit := do
   IO.FS.writeFile events "";
