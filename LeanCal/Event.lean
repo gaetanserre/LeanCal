@@ -5,6 +5,7 @@
 import LeanCal.Utils
 import LeanCal.Date
 
+/-- Inductive type for recurrent Event. -/
 inductive Time where
   | Day (n : Nat) : Time
   | Month (n : Nat) : Time
@@ -44,6 +45,7 @@ instance : ToString Event where
 instance : BEq Event where
   beq := fun e1 e2 ↦ toString e1 == toString e2
 
+/-- Construct an event given a String of form `yy-mm-dd_hh-mm^Event description^[n-{d|m|y}]` -/
 def construct_event (event_str : String) : Event :=
   let date_event_recu := (event_str.splitOn "^")
   let day_hour := (date_event_recu.get! 0).splitOn "_"

@@ -6,7 +6,7 @@
 def sys_call (cmd : String) (args : Array String) (cwd : Option String := none) : IO String :=
   IO.Process.run {cmd := cmd, args := args, cwd := cwd}
 
-def string_to_true (_ : String) : IO Bool := pure true
+def IO_string_to_true (_ : String) : IO Bool := pure true
 
 def read_lines (fname : String) : IO (List String) :=
   let remove_last_endline (a : Array String) : List String :=
@@ -17,17 +17,18 @@ def read_lines (fname : String) : IO (List String) :=
   IO.FS.lines fname >>= fun a ↦ pure (remove_last_endline a)
 
 namespace List
-
-def diff {α : Type} [BEq α] (l1 l2 : List α) : List α :=
+/-- Given two lists `l₁` `l₂` construct [e | e ∈ l₁ ∧ e ∉ l₂] -/
+def diff {α : Type} [BEq α] (l₁ l₂ : List α) : List α :=
   let rec aux (l acc : List α) :=
     match l with
     | [] => acc
     | hd::tl =>
-      if l2.contains hd then aux tl acc
+      if l₂.contains hd then aux tl acc
       else aux tl (hd::acc)
-  aux l1 []
+  aux l₁ []
 
 end List
 
 def send_notification (s : String) : IO Bool := do
-  sys_call "notify-send" #[s, "-t", "10000", "-i", "LeanCal_HOME/calendar.png"] >>= string_to_true
+  sys_call "notify-send" #[s, "-t", "10000", "-i", "LeanCal_HOME/calendar.png"]
+    >>= IO_string_to_true

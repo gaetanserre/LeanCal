@@ -7,7 +7,7 @@ import LeanCal.Date
 
 def main (argv : List String) : IO Unit := do
   match argv with
-    | [] => cal_run "LeanCal_HOME/events.txt" "LeanCal_HOME/past_events.txt"
+    | [] => calendar_run "LeanCal_HOME/events.txt" "LeanCal_HOME/past_events.txt"
     | ["--clean"] | ["-c"] =>
       clean_events "LeanCal_HOME/events.txt" "LeanCal_HOME/past_events.txt"
     | _ => IO.println "Error!"

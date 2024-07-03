@@ -4,31 +4,27 @@
 
 import LeanCal.Event
 
+/-- Get date from syscall. -/
 def get_date : IO String :=
   let format_date (s : String) :=
     pure (s.replace "\n" "")
   sys_call "date" #["+%y-%m-%d%H-%M"] >>= format_date
 
-def compare_dates (d1 d2 : String) : Bool :=
-  let i_d1 := (d1.replace "-" "").toNat!
-  let i_d2 := (d2.replace "-" "").toNat!
-  i_d1 ≤ i_d2
+def compare_dates (d₁ d₂ : String) : Bool :=
+  let i_d₁ := (d₁.replace "-" "").toNat!
+  let i_d₂ := (d₂.replace "-" "").toNat!
+  i_d₁ ≤ i_d₂
 
-def check_if_past (e : Event) (past_events : List Event) : Bool :=
-  match past_events with
-    | [] => false
-    | he::tl =>
-      if e == he then true
-      else check_if_past e tl
-
+/-- Send a notification for Event `e` if `e` ∉ `past_events`. -/
 def notify_event (e : Event) (past_events : List Event) : IO Bool :=
   let d_event := toString e.date ++ e.hour
-  get_date >>= fun d2 ↦
-    if compare_dates d_event d2 ∧ ¬(check_if_past e past_events) then
+  get_date >>= fun d₂ ↦
+    if compare_dates d_event d₂ ∧ ¬(past_events.contains e) then
       send_notification s!"{e.hour.replace "-" ":"} : {e.event}"
     else pure false
 
-def notify_events (events past_events : List Event) := do
+/-- Send a notification for each due event and returns the list of such events. -/
+def notify_events (events past_events : List Event) : IO (List Event) := do
   let rec notify_each_event (el past_el notified_el : List Event) : IO (List Event) := do
     match el with
       | [] => pure notified_el
@@ -38,6 +34,7 @@ def notify_events (events past_events : List Event) := do
           else notify_each_event tl past_el notified_el
   notify_each_event events past_events []
 
+/-- For each due recurrent events, create the next one. -/
 def create_new_recurrent_events (events : List Event) : List Event :=
   let rec aux (l acc : List Event) :=
     match l with
@@ -60,19 +57,28 @@ def create_new_recurrent_events (events : List Event) : List Event :=
               } :: acc)
   aux events []
 
-def cal_run (fevents fpast_events : String) := do
+/--
+  Main loop.
+  1. Read recorded events and past events
+  2. Notify due events
+  3. Create new recurrent events
+  4. Update files
+  5. Sleep
+  6. Step 1
+-/
+def calendar_run (fevents fpast_events : String) := do
   while true do
     read_lines fevents >>= fun el ↦
       read_lines fpast_events >>= fun past_el ↦
         let events := (el.map construct_event)
         let past_events := (past_el.map construct_event)
-        notify_events events past_events >>= fun notified_el ↦
-          let new_recu_events := create_new_recurrent_events notified_el
-          (if 1 <= notified_el.length then do
+        notify_events events past_events >>= fun due_events ↦
+          let new_recu_events := create_new_recurrent_events due_events
+          (if 1 <= due_events.length then do
             IO.FS.writeFile fpast_events
-              <| (past_events ++ notified_el).foldr (fun e acc ↦ (toString e) ++ "\n" ++ acc) ""
+              <| (past_events ++ due_events).foldr (fun e acc ↦ (toString e) ++ "\n" ++ acc) ""
             IO.FS.writeFile fevents
-              <| ((events.diff notified_el) ++ new_recu_events).foldr
+              <| ((events.diff due_events) ++ new_recu_events).foldr
                  (fun e acc ↦ (toString e) ++ "\n" ++ acc) ""
           else pure ());
           IO.sleep 10000
