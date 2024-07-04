@@ -12,7 +12,10 @@ def main (argv : List String) : IO Unit := do
   let fpast_events := s!"{LeanCal_home}/past_events.txt"
   match argv with
     | [] => calendar_run fevents fpast_events
-    | ["-w"] | ["--waybar"] => get_waybar_events fevents fpast_events >>= IO.println
+    | ["-w"] | ["--waybar"] =>
+      get_waybar_events fevents fpast_events >>= IO.println
+    | ["-w", "-co"] | ["--waybar", "--complex_output"] =>
+      get_waybar_events fevents fpast_events true >>= IO.println
     | ["--clean"] | ["-c"] =>
       clean_events fevents fpast_events
     | _ => IO.println "Error!"

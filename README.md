@@ -26,10 +26,15 @@ The date is in the format `yy-mm-dd_hh:mm` and the recurrence is optional. The r
 LeanCal can be integrated with [Waybar](https://github.com/Alexays/Waybar). To do so, add the following block to your Waybar configuration:
 ```json
 "custom/leanCal": {
-    "format": "🗓️ {}",
+    "format": "{}",
     "tooltip": true,
-    "interval": 3600,
-    "exec": "path/to/leancal -w",
+    "interval": 60,
+    "exec": "path/to/leancal -w -co",
     "return-type": "json"
   }
 ```
+It will display the date along with the number of events due today. When hovered, it will display the events due today and tomorrow.
+
+**Example:** 🕛 10:55 🗓️ 04/07 (1)
+
+Remove the `-co` flag if you just want basic display, i.e. the number of events due today.
