@@ -44,13 +44,13 @@ def display_events (today_events tomorrow_events : List Event) (day_hour : Strin
   let tooltip :=
     -- Display today's events if any.
     (if 0 < today_events.length then
-      "🗓️ <b>Today</b>\\n" ++ (format_events today_events)
+      "🗓️ <b>Aujourd'hui</b>\\n" ++ (format_events today_events)
     else "")
     ++
     -- Display tomorrow's events if any. Newlines if today's events nonempty.
     (if 0 < tomorrow_events.length then
       (if 0 < today_events.length then "\\n\\n" else "")
-      ++ "🗓️ <b>Tomorrow</b>\\n" ++ (format_events tomorrow_events)
+      ++ "🗓️ <b>Demain</b>\\n" ++ (format_events tomorrow_events)
     else "")
 
   "{\"text\":"
