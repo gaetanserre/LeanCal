@@ -18,4 +18,4 @@ def main (argv : List String) : IO Unit := do
       get_waybar_events fevents fpast_events true >>= IO.println
     | ["--clean"] | ["-c"] =>
       clean_events fevents fpast_events
-    | _ => IO.println "Error!"
+    | _ => throw <| IO.userError "Error!"
