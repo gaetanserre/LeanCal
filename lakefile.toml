@@ -1,0 +1,9 @@
+name = "leancal"
+defaultTargets = ["leancal"]
+
+[[lean_lib]]
+name = "LeanCal"
+
+[[lean_exe]]
+name = "leancal"
+root = "Main"
