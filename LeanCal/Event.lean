@@ -18,8 +18,8 @@ def construct_time (s : String) : Time :=
   if s == "" then None
   else
     let s_splitted := s.splitOn "-"
-    let n := (s_splitted.get! 0).toNat!
-    match s_splitted.get! 1 with
+    let n := (s_splitted[0]!).toNat!
+    match s_splitted[1]! with
       | "d" => Day n
       | "m" => Month n
       | "y" => Year n
@@ -48,14 +48,14 @@ instance : BEq Event where
 /-- Construct an event given a String of form `yy-mm-dd_hh-mm^Event description^[n-{d|m|y}]` -/
 def construct_event (event_str : String) : Event :=
   let date_event_recu := (event_str.splitOn "^")
-  let day_hour := (date_event_recu.get! 0).splitOn "_"
+  let day_hour := (date_event_recu[0]!).splitOn "_"
   let recu :=
     if date_event_recu.length == 3 then
-      construct_time (date_event_recu.get! 2)
+      construct_time (date_event_recu[2]!)
     else None
   {
-    date := construct_date (day_hour.get! 0),
-    hour := day_hour.get! 1,
-    event := date_event_recu.get! 1,
+    date := construct_date (day_hour[0]!),
+    hour := day_hour[1]!,
+    event := date_event_recu[1]!,
     recu := recu
   }

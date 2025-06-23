@@ -10,9 +10,9 @@ structure Date where
 def construct_date (s : String) : Date :=
   let s_splitted := s.splitOn "-"
   {
-    year := (s_splitted.get! 0).toNat!,
-    month := (s_splitted.get! 1).toNat!,
-    day := (s_splitted.get! 2).toNat!
+    year := (s_splitted[0]!).toNat!,
+    month := (s_splitted[1]!).toNat!,
+    day := (s_splitted[2]!).toNat!
   }
 
 instance : ToString Date where

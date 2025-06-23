@@ -10,10 +10,10 @@ def IO_string_to_true (_ : String) : IO Bool := pure true
 
 def read_lines (fname : String) : IO (List String) :=
   let remove_last_endline (a : Array String) : List String :=
-    if a.size == 0 then a.data
-    else if a.get! (a.size - 1) == "" then
-      a.data.dropLast
-    else a.data
+    if a.size == 0 then a.toList
+    else if a[a.size - 1]! == "" then
+      a.toList.dropLast
+    else a.toList
   IO.FS.lines fname >>= fun a ↦ pure (remove_last_endline a)
 
 namespace List
@@ -30,5 +30,5 @@ def diff {α : Type} [BEq α] (l₁ l₂ : List α) : List α :=
 end List
 
 def send_notification (s : String) : IO Bool := do
-  sys_call "notify-send" #[s, "-t", "10000", "-i", "LeanCal_HOME/calendar.png"]
+  sys_call "notify-send" #[s, "-t", "10000", "-i", "/home/gserre/.LeanCal/calendar.png"]
     >>= IO_string_to_true

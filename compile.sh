@@ -25,4 +25,4 @@ find . -type f -not -path '*/\.*' -name "*.lean" -exec sed -i -- "s@LeanCal_HOME
 lake build
 
 # Move the executable to the root directory
-cp .lake/build/bin/leancal .
+mv .lake/build/bin/leancal .
