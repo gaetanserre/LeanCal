@@ -30,5 +30,9 @@ def diff {α : Type} [BEq α] (l₁ l₂ : List α) : List α :=
 end List
 
 def send_notification (s : String) : IO Bool := do
-  sys_call "notify-send" #[s, "-t", "10000", "-i", "/home/gserre/.LeanCal/calendar.png"]
-    >>= IO_string_to_true
+  let home <- IO.getEnv "HOME"
+  match home with
+  | none => throw <| IO.userError "HOME environment variable not set!"
+  | some home =>
+    sys_call "notify-send" #[s, "-t", "10000", "-i", s!"{home}/.LeanCal/calendar.png"]
+      >>= IO_string_to_true

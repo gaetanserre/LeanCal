@@ -22,20 +22,24 @@ def get_symbol (l : List String) (id : String) (default_sym : String) : String :
       else get_symbol tl id default_sym
 
 def main (argv : List String) : IO Unit := do
-  let LeanCal_home := "/home/gserre/.LeanCal"
-  let fevents := s!"{LeanCal_home}/events.txt"
-  let fpast_events := s!"{LeanCal_home}/past_events.txt"
+  let home <- IO.getEnv "HOME"
+  match home with
+    | none => throw <| IO.userError "HOME environment variable not set!"
+    | some home =>
+      let LeanCal_home := s!"{home}/.LeanCal"
+      let fevents := s!"{LeanCal_home}/events.txt"
+      let fpast_events := s!"{LeanCal_home}/past_events.txt"
 
-  if argv.isEmpty then
-    calendar_run fevents fpast_events
-  else if argv.contains "-w" || argv.contains "--waybar" then
-    let calendar_symbol := get_symbol argv "--cal_sym" "🗓️"
-    let clock_symbol := get_symbol argv "--clock_sym" "🕛"
-    if argv.contains "-co" || argv.contains "--complex_output" then
-      get_waybar_events calendar_symbol clock_symbol fevents fpast_events true >>= IO.println
-    else
-      get_waybar_events calendar_symbol clock_symbol fevents fpast_events >>= IO.println
-  else if argv.contains "-c" || argv.contains "--clean" then
-    clean_events fevents fpast_events
-  else
-    throw <| IO.userError "Unrecognized argument!"
+      if argv.isEmpty then
+        calendar_run fevents fpast_events
+      else if argv.contains "-w" || argv.contains "--waybar" then
+        let calendar_symbol := get_symbol argv "--cal_sym" "🗓️"
+        let clock_symbol := get_symbol argv "--clock_sym" "🕛"
+        if argv.contains "-co" || argv.contains "--complex_output" then
+          get_waybar_events calendar_symbol clock_symbol fevents fpast_events true >>= IO.println
+        else
+          get_waybar_events calendar_symbol clock_symbol fevents fpast_events >>= IO.println
+      else if argv.contains "-c" || argv.contains "--clean" then
+        clean_events fevents fpast_events
+      else
+        throw <| IO.userError "Unrecognized argument!"

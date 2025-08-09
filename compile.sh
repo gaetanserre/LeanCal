@@ -18,9 +18,6 @@ fi
 # Copy calendar.png to LeanCal_HOME
 cp calendar.png $leancal_home
 
-# Replace LeanCal_HOME in code with actual LeanCal home path
-find . -type f -not -path '*/\.*' -name "*.lean" -exec sed -i -- "s@LeanCal_HOME@${leancal_home}@g" {} +
-
 # Compile Lean code
 lake build
 
