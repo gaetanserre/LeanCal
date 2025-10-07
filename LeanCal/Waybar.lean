@@ -20,9 +20,9 @@ def format_events (clock_symbol : String) (el : List Event) : String :=
   match el with
     | [] => ""
     | [e] =>
-      s!"{clock_symbol} <b>{e.hour}</b> : {e.event}"
+      s!"{clock_symbol} <b>{e.hour}</b> - {e.event}"
     | e::tl =>
-      s!"{clock_symbol} <b>{e.hour}</b> : {e.event}\\n" ++ format_events clock_symbol tl
+      s!"{clock_symbol} <b>{e.hour}</b> - {e.event}\\n" ++ format_events clock_symbol tl
 
 /-- Get all events of a specific date. -/
 def get_date_events (d : Date) (el : List Event) : List Event :=
