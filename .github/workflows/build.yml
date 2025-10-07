@@ -44,4 +44,4 @@ jobs:
         with:
           body: "Release ${{ github.ref }}"
           files: |
-            ./leancal
+            ./leancal/**/*
