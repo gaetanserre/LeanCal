@@ -31,7 +31,7 @@ def get_date_events (d : Date) (el : List Event) : List Event :=
       | [] => acc
       | e::tl =>
         aux tl (if e.date == d then e::acc else acc)
-  aux el []
+  (aux el []).reverse
 
 def display_text (n_events : Nat) (calendar_symbol clock_symbol day_hour : String) : String :=
   let day_hour := day_hour.splitOn "-"
