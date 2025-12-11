@@ -18,6 +18,12 @@ fi
 # Copy calendar.png to LeanCal_HOME
 cp calendar.png $leancal_home
 
+# Check if there is an argument and if it is equal to "fr"
+if [ "$1" == "fr" ]; then
+    sed -i "s/\bTomorrow\b/Demain/g" LeanCal/Waybar.lean
+    sed -i "s/\bToday\b/Aujourd\'hui/g" LeanCal/Waybar.lean
+fi
+
 # Compile Lean code
 lake build
 
