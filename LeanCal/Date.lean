@@ -2,6 +2,8 @@
  - Created in 2024 by Gaëtan Serré
  -/
 
+import Init.Data.Order.ClassesExtra
+
 structure Date where
   day : Nat
   month : Nat
@@ -59,3 +61,14 @@ def add_days (d : Date) (n : Nat) : Date :=
     add_months d_tmp 1
   else
     d_tmp
+
+def Date.toNat (d : Date) : Nat :=
+  d.year * 10000 + d.month * 100 + d.day
+
+/- instance : LE Date where
+  le d₁ d₂ := toNat d₁ ≤ toNat d₂
+
+instance : DecidableLE Date := by
+  intro a b
+  simp [instLEDate]
+  infer_instance -/

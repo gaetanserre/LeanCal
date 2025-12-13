@@ -20,9 +20,9 @@ def format_events (clock_symbol : String) (el : List Event) : String :=
   match el with
     | [] => ""
     | [e] =>
-      s!"{clock_symbol} <b>{e.hour}</b> - {e.event}"
+      s!"{clock_symbol} <b>{e.hour.1}:{e.hour.2}</b> - {e.event}"
     | e::tl =>
-      s!"{clock_symbol} <b>{e.hour}</b> - {e.event}\\n" ++ format_events clock_symbol tl
+      s!"{clock_symbol} <b>{e.hour.1}:{e.hour.2}</b> - {e.event}\\n" ++ format_events clock_symbol tl
 
 /-- Get all events of a specific date. -/
 def get_date_events (d : Date) (el : List Event) : List Event :=
@@ -31,7 +31,7 @@ def get_date_events (d : Date) (el : List Event) : List Event :=
       | [] => acc
       | e::tl =>
         aux tl (if e.date == d then e::acc else acc)
-  (aux el []).reverse
+  (aux el []).mergeSort (fun e1 e2 ↦ decide (e1 ≤ e2))
 
 def display_text (n_events : Nat) (calendar_symbol clock_symbol day_hour : String) : String :=
   let day_hour := day_hour.splitOn "-"

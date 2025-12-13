@@ -17,7 +17,7 @@ def compare_dates (d₁ d₂ : String) : Bool :=
 
 /-- Send a notification for Event `e` if `e` ∉ `past_events`. -/
 def notify_event (e : Event) (past_events : List Event) : IO Bool :=
-  let d_event := toString e.date ++ e.hour
+  let d_event := toString e.date ++ toString e.hour.1 ++ ":" ++ toString e.hour.2
   get_date >>= fun d₂ ↦
     if compare_dates d_event d₂ ∧ ¬(past_events.contains e) then
       send_notification s!"{e.hour} : {e.event}"

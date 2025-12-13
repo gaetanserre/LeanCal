@@ -27,35 +27,46 @@ def construct_time (s : String) : Time :=
 
 structure Event where
   date : Date
-  hour : String
+  hour : Nat × Nat
   event : String
   recu : Time
 
 instance : ToString Event where
   toString := fun e ↦
     match e.recu with
-    | None => s!"{e.date}_{e.hour}^{e.event}"
+    | None => s!"{e.date}_{e.hour.1}:{e.hour.2}^{e.event}"
     | Day n =>
-      s!"{e.date}_{e.hour}^{e.event}^{n}-d"
+      s!"{e.date}_{e.hour.1}:{e.hour.2}^{e.event}^{n}-d"
     | Month n =>
-      s!"{e.date}_{e.hour}^{e.event}^{n}-m"
+      s!"{e.date}_{e.hour.1}:{e.hour.2}^{e.event}^{n}-m"
     | Year n =>
-      s!"{e.date}_{e.hour}^{e.event}^{n}-y"
+      s!"{e.date}_{e.hour.1}:{e.hour.2}^{e.event}^{n}-y"
 
 instance : BEq Event where
   beq := fun e1 e2 ↦ toString e1 == toString e2
 
 /-- Construct an event given a String of form `yy-mm-dd_hh-mm^Event description^[n-{d|m|y}]` -/
 def construct_event (event_str : String) : Event :=
-  let date_event_recu := (event_str.splitOn "^")
+  let date_event_recu := event_str.splitOn "^"
   let day_hour := (date_event_recu[0]!).splitOn "_"
+  let hour := (day_hour[1]!).splitOn ":"
   let recu :=
     if date_event_recu.length == 3 then
       construct_time (date_event_recu[2]!)
     else None
-  {
-    date := construct_date (day_hour[0]!),
-    hour := day_hour[1]!,
-    event := date_event_recu[1]!,
-    recu := recu
-  }
+  ⟨construct_date (day_hour[0]!),
+  ((hour[0]!).toNat!, (hour[1]!).toNat!),
+  date_event_recu[1]!,
+  recu⟩
+
+def Event.toNat (e : Event) : Nat :=
+  let d_nat := e.date.toNat
+  d_nat * 10000 + e.hour.1 * 100 + e.hour.2
+
+instance : LE Event where
+  le e₁ e₂ := e₁.toNat ≤ e₂.toNat
+
+instance : DecidableLE Event := by
+  intro a b
+  simp [instLEEvent]
+  infer_instance
