@@ -31,16 +31,24 @@ structure Event where
   event : String
   recu : Time
 
+namespace Event
+
+def format_hour (e : Event) : String :=
+  if e.hour.2 < 10 then
+    s!"{e.hour.1}:0{e.hour.2}"
+  else
+    s!"{e.hour.1}:{e.hour.2}"
+
 instance : ToString Event where
   toString := fun e ↦
     match e.recu with
-    | None => s!"{e.date}_{e.hour.1}:{e.hour.2}^{e.event}"
+    | None => s!"{e.date}_{e.format_hour}^{e.event}"
     | Day n =>
-      s!"{e.date}_{e.hour.1}:{e.hour.2}^{e.event}^{n}-d"
+      s!"{e.date}_{e.format_hour}^{e.event}^{n}-d"
     | Month n =>
-      s!"{e.date}_{e.hour.1}:{e.hour.2}^{e.event}^{n}-m"
+      s!"{e.date}_{e.format_hour}^{e.event}^{n}-m"
     | Year n =>
-      s!"{e.date}_{e.hour.1}:{e.hour.2}^{e.event}^{n}-y"
+      s!"{e.date}_{e.format_hour}^{e.event}^{n}-y"
 
 instance : BEq Event where
   beq := fun e1 e2 ↦ toString e1 == toString e2
@@ -59,7 +67,7 @@ def construct_event (event_str : String) : Event :=
   date_event_recu[1]!,
   recu⟩
 
-def Event.toNat (e : Event) : Nat :=
+def toNat (e : Event) : Nat :=
   let d_nat := e.date.toNat
   d_nat * 10000 + e.hour.1 * 100 + e.hour.2
 
@@ -68,5 +76,7 @@ instance : LE Event where
 
 instance : DecidableLE Event := by
   intro a b
-  simp [instLEEvent]
+  simp only [instLE]
   infer_instance
+
+end Event

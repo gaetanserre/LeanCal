@@ -17,6 +17,8 @@ def construct_date (s : String) : Date :=
     day := (s_splitted[2]!).toNat!
   }
 
+namespace Date
+
 instance : ToString Date where
   toString := fun d ↦
     let format := fun n ↦ if 9 < n then toString n else "0" ++ toString n
@@ -62,13 +64,7 @@ def add_days (d : Date) (n : Nat) : Date :=
   else
     d_tmp
 
-def Date.toNat (d : Date) : Nat :=
+def toNat (d : Date) : Nat :=
   d.year * 10000 + d.month * 100 + d.day
 
-/- instance : LE Date where
-  le d₁ d₂ := toNat d₁ ≤ toNat d₂
-
-instance : DecidableLE Date := by
-  intro a b
-  simp [instLEDate]
-  infer_instance -/
+end Date

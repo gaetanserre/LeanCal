@@ -20,7 +20,7 @@ def notify_event (e : Event) (past_events : List Event) : IO Bool :=
   let d_event := toString e.date ++ toString e.hour.1 ++ ":" ++ toString e.hour.2
   get_date >>= fun d₂ ↦
     if compare_dates d_event d₂ ∧ ¬(past_events.contains e) then
-      send_notification s!"{e.hour} : {e.event}"
+      send_notification s!"{e.format_hour} - {e.event}"
     else pure false
 
 /-- Send a notification for each due event and returns the list of such events. -/
@@ -44,10 +44,10 @@ def create_new_recurrent_events (events : List Event) : List Event :=
           | Time.None => aux tl acc
           | Time.Day n =>
             aux tl
-              <| ({event:=e.event, hour:=e.hour, recu:=e.recu, date := add_days e.date n} :: acc)
+              <| ({event:=e.event, hour:=e.hour, recu:=e.recu, date := e.date.add_days n} :: acc)
           | Time.Month n =>
             aux tl
-              <| ({event:=e.event, hour:=e.hour, recu:=e.recu, date := add_months e.date n} :: acc)
+              <| ({event:=e.event, hour:=e.hour, recu:=e.recu, date := e.date.add_months n} :: acc)
           | Time.Year n =>
             aux tl ({
                 event:=e.event,
@@ -70,8 +70,8 @@ def calendar_run (fevents fpast_events : String) := do
   while true do
     read_lines fevents >>= fun el ↦
       read_lines fpast_events >>= fun past_el ↦
-        let events := (el.map construct_event)
-        let past_events := (past_el.map construct_event)
+        let events := (el.map Event.construct_event)
+        let past_events := (past_el.map Event.construct_event)
         notify_events events past_events >>= fun due_events ↦
           let new_recu_events := create_new_recurrent_events due_events
           (if 1 <= due_events.length then do

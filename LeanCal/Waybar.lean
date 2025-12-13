@@ -20,9 +20,9 @@ def format_events (clock_symbol : String) (el : List Event) : String :=
   match el with
     | [] => ""
     | [e] =>
-      s!"{clock_symbol} <b>{e.hour.1}:{e.hour.2}</b> - {e.event}"
+      s!"{clock_symbol} <b>{e.format_hour}</b> - {e.event}"
     | e::tl =>
-      s!"{clock_symbol} <b>{e.hour.1}:{e.hour.2}</b> - {e.event}\\n" ++ format_events clock_symbol tl
+      s!"{clock_symbol} <b>{e.format_hour}</b> - {e.event}\\n" ++ format_events clock_symbol tl
 
 /-- Get all events of a specific date. -/
 def get_date_events (d : Date) (el : List Event) : List Event :=
@@ -66,11 +66,11 @@ def get_waybar_events (calendar_symbol clock_symbol fevents fpast_events : Strin
     (complex_text : Bool := false) : IO String := do
   read_lines fevents >>=
     fun el ↦ read_lines fpast_events >>= fun past_el ↦ do
-      let events := el.map construct_event ++ past_el.map construct_event
+      let events := el.map Event.construct_event ++ past_el.map Event.construct_event
       let io_today ← get_day
       let today := construct_date io_today
       let today_events := get_date_events today events
-      let tomorrow_events := get_date_events (add_days today 1) events
+      let tomorrow_events := get_date_events (today.add_days 1) events
       let day_hour ← get_day_and_hour
       pure (display_events
             today_events
