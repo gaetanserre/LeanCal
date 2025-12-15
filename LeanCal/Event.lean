@@ -33,22 +33,34 @@ structure Event where
 
 namespace Event
 
-def format_hour (e : Event) : String :=
+def format_minute (e : Event) : String :=
   if e.hour.2 < 10 then
     s!"{e.hour.1}:0{e.hour.2}"
   else
     s!"{e.hour.1}:{e.hour.2}"
 
+def format_hour_minute (e : Event) : String :=
+  if e.hour.1 < 10 then
+    if e.hour.2 < 10 then
+      s!"0{e.hour.1}:0{e.hour.2}"
+    else
+      s!"0{e.hour.1}:{e.hour.2}"
+  else
+    if e.hour.2 < 10 then
+      s!"{e.hour.1}:0{e.hour.2}"
+    else
+      s!"{e.hour.1}:{e.hour.2}"
+
 instance : ToString Event where
   toString := fun e ↦
     match e.recu with
-    | None => s!"{e.date}_{e.format_hour}^{e.event}"
+    | None => s!"{e.date}_{e.format_minute}^{e.event}"
     | Day n =>
-      s!"{e.date}_{e.format_hour}^{e.event}^{n}-d"
+      s!"{e.date}_{e.format_minute}^{e.event}^{n}-d"
     | Month n =>
-      s!"{e.date}_{e.format_hour}^{e.event}^{n}-m"
+      s!"{e.date}_{e.format_minute}^{e.event}^{n}-m"
     | Year n =>
-      s!"{e.date}_{e.format_hour}^{e.event}^{n}-y"
+      s!"{e.date}_{e.format_minute}^{e.event}^{n}-y"
 
 instance : BEq Event where
   beq := fun e1 e2 ↦ toString e1 == toString e2
