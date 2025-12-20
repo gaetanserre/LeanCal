@@ -22,6 +22,10 @@ The date is in the format `yy-mm-dd_hh:mm` and the recurrence is optional. The r
 
 **Example:** `24-08-30_12:00^Meeting with Gruvbox^7-d`
 
+LeanCal also supports all-day events. To create an all-day event, simply write the date in the format `yy-mm-dd_All Day`.
+
+**Example:** `25-12-20_All Day^Gruvbox's birthday`
+
 ### Waybar
 LeanCal can be integrated with [Waybar](https://github.com/Alexays/Waybar). To do so, add the following block to your Waybar configuration:
 ```json

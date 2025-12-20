@@ -16,13 +16,16 @@ def get_day_and_hour : IO String :=
     pure (s.replace "\n" "")
   sys_call "date" #["+%d/%m-%H:%M"] >>= format_date
 
+def print_event (e : Event) (clock_symbol : String) : String :=
+  match e.hour with
+    | Hour.AllDay => s!"🌞 - {e.event}"
+    | Hour.Specific _ => s!"{clock_symbol} <b>{e.format_minute}</b> - {e.event}"
+
 def format_events (clock_symbol : String) (el : List Event) : String :=
   match el with
     | [] => ""
-    | [e] =>
-      s!"{clock_symbol} <b>{e.format_minute}</b> - {e.event}"
-    | e::tl =>
-      s!"{clock_symbol} <b>{e.format_minute}</b> - {e.event}\\n" ++ format_events clock_symbol tl
+    | [e] => print_event e clock_symbol
+    | e::tl => print_event e clock_symbol ++ format_events clock_symbol tl
 
 /-- Get all events of a specific date. -/
 def get_date_events (d : Date) (el : List Event) : List Event :=

@@ -17,11 +17,15 @@ def compare_dates (d₁ d₂ : String) : Bool :=
 
 /-- Send a notification for Event `e` if `e` ∉ `past_events`. -/
 def notify_event (e : Event) (past_events : List Event) : IO Bool :=
-  let d_event := toString e.date ++ e.format_hour_minute
-  get_date >>= fun d₂ ↦
-    if compare_dates d_event d₂ ∧ ¬(past_events.contains e) then
-      send_notification s!"{e.format_minute} - {e.event}"
-    else pure false
+  match e.hour with
+    | Hour.AllDay => get_date >>= fun d₂ ↦ pure <|
+      compare_dates (toString e.date ++ "00:00") d₂ ∧ ¬(past_events.contains e)
+    | Hour.Specific _ =>
+      let d_event := toString e.date ++ e.format_hour_minute
+      get_date >>= fun d₂ ↦
+        if compare_dates d_event d₂ ∧ ¬(past_events.contains e) then
+          send_notification s!"{e.format_minute} - {e.event}"
+        else pure false
 
 /-- Send a notification for each due event and returns the list of such events. -/
 def notify_events (events past_events : List Event) : IO (List Event) := do
