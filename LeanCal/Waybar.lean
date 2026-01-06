@@ -25,7 +25,7 @@ def format_events (clock_symbol : String) (el : List Event) : String :=
   match el with
     | [] => ""
     | [e] => print_event e clock_symbol
-    | e::tl => print_event e clock_symbol ++ format_events clock_symbol tl
+    | e::tl => print_event e clock_symbol ++ "\\n" ++ format_events clock_symbol tl
 
 /-- Get all events of a specific date. -/
 def get_date_events (d : Date) (el : List Event) : List Event :=
