@@ -85,6 +85,14 @@ instance : ToString Event where
 instance : BEq Event where
   beq := fun e1 e2 ↦ toString e1 == toString e2
 
+-- TODO: to complete
+def escape_string (s : String) : String :=
+  s.replace "&" "&amp;"
+   |>.replace "<" "&lt;"
+   |>.replace ">" "&gt;"
+   |>.replace "\"" "&quot;"
+   |>.replace "'" "&apos;"
+
 /-- Construct an event given a String of form `yy-mm-dd_hh-mm^Event description^[n-{d|m|y}]` -/
 def construct_event (event_str : String) : Event :=
   let date_event_recu := event_str.splitOn "^"
@@ -104,7 +112,7 @@ def construct_event (event_str : String) : Event :=
 
   ⟨ construct_date (day_hour[0]!),
     hour,
-    date_event_recu[1]!,
+    escape_string date_event_recu[1]!,
     recu  ⟩
 
 def toNat (e : Event) : Nat :=
